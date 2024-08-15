@@ -66,7 +66,7 @@ const api = createApi({
                 url: `/chat/message/${chatId}?page=${page}`,
                 Credentials: "include",
             }),
-            providesTags: ["Message"],
+            keepUnusedDataFor: 0,
 
         }),
         sendAttachment: builder.mutation({

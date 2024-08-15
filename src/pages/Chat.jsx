@@ -13,6 +13,7 @@ import { useChatDetailsQuery, useGetAllMessagesQuery } from '../redux/api/api'
 import { useError, useSocketsEvents } from '../Hooks/Hook'
 import { useInfiniteScrollTop } from '6pp'
 import { useDispatch } from 'react-redux'
+import { removeNewMessagesAlert } from '../redux/reducers/chat'
 
 
 
@@ -49,6 +50,7 @@ const Chat = ({ chatId, user }) => {
   ]
 
   useEffect(()=> {
+    dispatch(removeNewMessagesAlert(chatId))
     return ()=>{
       setMessages("")
       setMessages([])
@@ -72,7 +74,7 @@ const Chat = ({ chatId, user }) => {
   const newMessagesHandler = useCallback((data) => {
     if(data.chatId !== chatId) return
     setMessages((prev) => [...prev, data.message])
-  }, [])
+  }, [chatId])
 
   const eventHandler = { [NEW_MESSAGE]: newMessagesHandler }
 
