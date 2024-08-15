@@ -1,22 +1,85 @@
-import { useRef } from 'react'
-import { Stack, IconButton } from '@mui/material'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { Stack, IconButton, Skeleton } from '@mui/material'
 import AppLayout from '../components/Layout/AppLayout'
-import { DarkGreen, grayColor } from '../components/constants/Color'
+import { DarkGreen, grayColor } from '../constants/Color'
 import { AttachFile as AttachFileIcon, Send as SendIcon } from '@mui/icons-material'
 import { InputBox } from '../components/styles/StyledComponents'
 import FileMenu from '../components/dialogs/FileMenu'
-import { sampleMessage } from '../components/constants/SampleData'
+import { setIsFileMenu } from '../redux/reducers/misc'
 import MessageComponent from '../components/shared/MessageComponent'
+import { getSocket } from '../socket'
+import { NEW_MESSAGE } from '../constants/events'
+import { useChatDetailsQuery, useGetAllMessagesQuery } from '../redux/api/api'
+import { useError, useSocketsEvents } from '../Hooks/Hook'
+import { useInfiniteScrollTop } from '6pp'
+import { useDispatch } from 'react-redux'
 
-const user = {
-  _id: "asasas0",
-  name: "Ashfaq"
-}
 
-const Chat = () => {
+
+const Chat = ({ chatId, user }) => {
   const containerRef = useRef(null)
+  const socket = getSocket()
+  const dispatch = useDispatch()
 
-  return (
+  const [message, setMessage] = useState("")
+  const [messages, setMessages] = useState([])
+  const [page, setPage] = useState(1)
+  const [fileMenuAnchor, setIsFileMenuAnchor] = useState(null)
+
+  const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId })
+
+  const oldMessagesChunk = useGetAllMessagesQuery({ chatId, page })
+
+  const {data: oldMessages, setData: setOldMessages} = useInfiniteScrollTop(
+    containerRef,
+    oldMessagesChunk?.data?.totalPages,
+    page,
+    setPage,
+    oldMessagesChunk?.data?.message
+  )  
+  
+  const allMessages = [...oldMessages, ...messages]
+  
+  const members = chatDetails?.data?.chat?.members;
+   
+
+  const errors = [
+    { isError: chatDetails.isError, error: chatDetails.error },
+    { isError: oldMessagesChunk.isError, error: oldMessagesChunk.error }
+  ]
+
+  useEffect(()=> {
+    return ()=>{
+      setMessages("")
+      setMessages([])
+      setOldMessages([])
+      setPage(1)
+    }
+  },[chatId])
+
+  const handleFileOpen = (e) => {
+    dispatch(setIsFileMenu(true))
+    setIsFileMenuAnchor(e.currentTarget)
+  }
+
+  const submitHandler = (e) => {
+    e.preventDefault()
+    if (!message.trim()) return;
+    socket.emit(NEW_MESSAGE, { chatId, members, message })
+    setMessage("")
+  }
+
+  const newMessagesHandler = useCallback((data) => {
+    if(data.chatId !== chatId) return
+    setMessages((prev) => [...prev, data.message])
+  }, [])
+
+  const eventHandler = { [NEW_MESSAGE]: newMessagesHandler }
+
+  useSocketsEvents(socket, eventHandler)
+  useError(errors)
+
+  return chatDetails.isLoading ? (<Skeleton />) : (
     <>
       <Stack
         ref={containerRef}
@@ -31,9 +94,9 @@ const Chat = () => {
 
         }}
       >
-
+       
         {
-          sampleMessage.map(i => (
+          allMessages.map(i => (
             <MessageComponent key={i._id} message={i} user={user} />
           ))
         }
@@ -41,7 +104,7 @@ const Chat = () => {
 
       <form style={{
         height: "10%"
-      }}  >
+      }} onSubmit={submitHandler} >
 
         <Stack
           direction={"row"}
@@ -50,37 +113,39 @@ const Chat = () => {
           alignItems={"center"}
           position={"relative"}
         >
-          <IconButton 
-          sx={{
-            position:  "absolute",
-            left: "1.5rem",
-            rotate: "30deg"
-          }}
-          
+          <IconButton
+            sx={{
+              position: "absolute",
+              left: "1.5rem",
+              rotate: "30deg"
+            }}
+            onClick={handleFileOpen}
           >
             <AttachFileIcon />
           </IconButton>
 
-          <InputBox placeholder='Type message here'/>
+          <InputBox placeholder='Type message here'
+            value={message}
+            onChange={(e) => setMessage(e.target.value)} />
 
           <IconButton
-          type='submit'
-          sx={{
-            rotate: "-30deg",
-            background: DarkGreen,
-            color: "white",
-            marginLeft: "1rem",
-            padding: "0.5rem",
-            "&:hover": {
-              bgcolor: "#141313",
-            }
-          }}
+            type='submit'
+            sx={{
+              rotate: "-30deg",
+              background: DarkGreen,
+              color: "white",
+              marginLeft: "1rem",
+              padding: "0.5rem",
+              "&:hover": {
+                bgcolor: "#141313",
+              }
+            }}
           >
             <SendIcon />
           </IconButton>
         </Stack>
       </form>
-      <FileMenu />
+      <FileMenu anchorEl={fileMenuAnchor} chatId={chatId} />
     </>
   )
 }

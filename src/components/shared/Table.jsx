@@ -1,6 +1,6 @@
 import { Paper, Typography, Container } from "@mui/material"
 import { DataGrid } from "@mui/x-data-grid";
-import { matBlack } from "../constants/Color"
+import { matBlack } from "../../constants/Color"
 import { ThemeProvider } from "@mui/material/styles"
 
 

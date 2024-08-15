@@ -1,5 +1,5 @@
 import { Dialog, DialogTitle, Button, Stack, Typography } from '@mui/material'
-import { SampleUsers } from '../constants/SampleData'
+import { SampleUsers } from '../../constants/SampleData'
 import UserItem from '../shared/UserItem'
 import { useState } from 'react'
 

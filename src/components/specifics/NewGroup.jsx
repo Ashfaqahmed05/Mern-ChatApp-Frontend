@@ -1,7 +1,7 @@
 import { useInputValidation } from '6pp';
 import { Button, Dialog, DialogTitle, Stack, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
-import { SampleUsers } from '../constants/SampleData';
+import { SampleUsers } from '../../constants/SampleData';
 import UserItem from '../shared/UserItem';
 const NewGroup = () => {
   const groupName = useInputValidation()

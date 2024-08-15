@@ -2,7 +2,7 @@
 import React from "react";
 import AppLayout from "../components/Layout/AppLayout";
 import { Box, Typography } from "@mui/material";
-import { grayColor } from "../components/constants/Color";
+import { grayColor } from "../constants/Color";
 
 const Home = () => {
   return (

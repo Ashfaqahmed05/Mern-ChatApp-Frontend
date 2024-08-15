@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { fileFormat, transformImage } from "../../lib/features"
 import moment from "moment"
 import { Avatar, Box, Stack } from "@mui/material"
-import { dashboardData } from "../../components/constants/SampleData"
+import { dashboardData } from "../../constants/SampleData"
 import RenderAttachment from "../../components/shared/RenderAttachment"
 
 const columns = [{

@@ -1,7 +1,7 @@
 import { Avatar, Stack } from "@mui/material"
 import { useEffect, useState } from "react"
 import AdminLayout from "../../components/Layout/AdminLayout"
-import { dashboardData } from "../../components/constants/SampleData"
+import { dashboardData } from "../../constants/SampleData"
 import AvatarCard from "../../components/shared/AvatarCard"
 import Table from "../../components/shared/Table"
 import { transformImage } from "../../lib/features"

@@ -8,11 +8,11 @@ import {
 import { Box, Button, Drawer, Grid, IconButton, Stack, TextField, Tooltip, Typography } from '@mui/material';
 import { memo, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { matBlack } from '../components/constants/Color';
+import { matBlack } from '../constants/Color';
 import AvatarCard from '../components/shared/AvatarCard';
 import { Link } from "../components/styles/StyledComponents";
 
-import { SampleUsers, sampleChats } from "../components/constants/SampleData";
+import { SampleUsers, sampleChats } from "../constants/SampleData";
 import AddMemberDialog from '../components/dialogs/AddMemberDialog';
 import ConfirmDeleteDialog from '../components/dialogs/ConfirmDeleteDialog';
 import UserItem from '../components/shared/UserItem';
