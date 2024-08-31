@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { DarkGreen } from '../../constants/Color';
 import { userNotExists } from '../../redux/reducers/auth';
 import { server } from "../../constants/config";
-import { setIsMobile, setIsNotification, setIsSearch } from "../../redux/reducers/misc";
+import { setIsMobile, setIsNewGroup, setIsNotification, setIsSearch } from "../../redux/reducers/misc";
 import { resetNotificationCount } from "../../redux/reducers/chat";
 
 const SearchDialog = lazy(() => import("../specifics/Search"))
@@ -38,11 +38,10 @@ const IconBtn = ({ title, icon, onClick, value }) => {
 }
 
 const Header = () => {
-  const { isNotification, isSearch } = useSelector((state) => state.misc)
+  const { isNotification, isSearch, isNewGroup } = useSelector((state) => state.misc)
   const { NotificationCount } = useSelector((state) => state.chat)
 
 
-  const [isGroup, setIsGroup] = useState(false);
 
   const dispatch = useDispatch()
   const navigate = useNavigate();
@@ -56,7 +55,7 @@ const Header = () => {
   };
 
   const openNewGroup = () => {
-    setIsGroup(!isGroup);
+    dispatch(setIsNewGroup(true))
   };
 
   const navigatToGroup = () => {
@@ -111,7 +110,7 @@ const Header = () => {
           <Notification />
         </Suspense>
       )}
-      {isGroup && (
+      {isNewGroup && (
         <Suspense fallback={<Backdrop open />}>
           <Group />
         </Suspense>

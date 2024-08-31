@@ -27,10 +27,15 @@ const fileFormat = (url) => {
 }
 
 const transformImage = (url = "", width = 100) => {
-    const newUrl = url.replace("upload/", `upload/dpr_auto/w_${width}/`)
+    if (typeof url !== "string" || !url) {
+        console.error('Invalid URL:', url);
+        return ''; // Or return a default placeholder URL
+    }
 
+    const newUrl = url.replace("upload/", `upload/dpr_auto/w_${width}/`);
     return newUrl;
 };
+
 
 const getLast7Days = () => {
     const currentDate = moment();
@@ -62,4 +67,4 @@ const getOrSaveFromLoclStorage = ({ key, value, get }) => {
 }
 
 
-export { fileFormat, transformImage, getLast7Days, getOrSaveFromLoclStorage};
+export { fileFormat, transformImage, getLast7Days, getOrSaveFromLoclStorage };

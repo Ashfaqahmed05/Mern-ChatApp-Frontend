@@ -3,11 +3,10 @@ import { Search as SearchIcon } from "@mui/icons-material";
 import { Dialog, DialogTitle, InputAdornment, List, Stack, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useAsyncMutation } from '../../Hooks/Hook';
 import { useLazySearchUserQuery, useSendFriendRequestMutation } from '../../redux/api/api';
 import { setIsSearch } from '../../redux/reducers/misc';
 import UserItem from '../shared/UserItem';
-import toast from "react-hot-toast"
-import { useAsyncMutation } from '../../Hooks/Hook';
 
 const Search = () => {
   const { isSearch } = useSelector((state) => state.misc);
@@ -38,7 +37,6 @@ const Search = () => {
     return () => clearTimeout(timeOutId);
   }, [search.value]);
 
-  console.log(users);
   return (
     <Dialog open={isSearch} onClose={handleCloseSearch}>
       <Stack p={"2rem"} direction={"column"} width={"25rem"}>

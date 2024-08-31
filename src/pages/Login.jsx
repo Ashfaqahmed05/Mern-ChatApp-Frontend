@@ -14,6 +14,7 @@ import { usernameValidator } from "../utils/validators"
 const Login = () => {
 
     const [isLogin, setIsLogin] = useState(true)
+    const [isLoading, setIsloading] = useState(false)
 
     const toggleLogin = () => setIsLogin((prev) => !prev)
 
@@ -28,31 +29,41 @@ const Login = () => {
 
     const handleSignin = async (e) => {
         e.preventDefault()
+        setIsloading(true)
+        const toastId = toast.loading("Logging In...")
 
+        const config = {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
         try {
-            const config = {
-                withCredentials: true,
-                headers: {
-                    "Content-Type": "application/json",
-                }
-            };
-
-            const data = await axios.post(`${server}/api/v1/user/login`, {
+            const {data} = await axios.post(`${server}/api/v1/user/login`, {
                 username: username.value,
                 password: password.value,
             },
                 config
             )
-            dispatch(userExists(true))
-            toast.success(data.message)
+            dispatch(userExists(data.user))
+
+            toast.success(data.message, {
+                id: toastId
+            })
         } catch (error) {
-            toast.error(error?.response?.data?.message || "Something went wrong")
+            toast.error(error?.response?.data?.message || "Something went wrong", {
+                id: toastId
+            })
+        } finally {
+            setIsloading(false)
         }
 
     }
 
     const handleSignup = async (e) => {
         e.preventDefault()
+        setIsloading(true)
+        const toastId = toast.loading("Signing Up...")
 
         const formData = new FormData();
         formData.append("avatar", avatar.file);
@@ -69,11 +80,16 @@ const Login = () => {
         };
         try {
             const { data } = await axios.post(`${server}/api/v1/user/new`, formData, config)
-
-            dispatch(userExists(true))
-            toast.success(data.message)
+            dispatch(userExists(data.user))
+            toast.success(data.message, {
+                id: toastId
+            })
         } catch (error) {
-            toast.error(error?.response?.data?.message || "Something went wrong")
+            toast.error(error?.response?.data?.message || "Something went wrong", {
+                id: toastId
+            })
+        } finally {
+            setIsloading(false)
         }
 
 
@@ -104,10 +120,10 @@ const Login = () => {
                                 variant="outlined"
                                 value={password.value}
                                 onChange={password.changeHandler} />
-                            <Button sx={{ marginBottom: "5px" }} variant="contained" fullWidth color="primary" type="submit">Login</Button>
+                            <Button sx={{ marginBottom: "5px" }} variant="contained" fullWidth color="primary" disabled={isLoading} type="submit">Login</Button>
                         </form>
                         <Typography>OR</Typography>
-                        <Button fullWidth varient="text" onClick={toggleLogin}>Sign Up Instead</Button>
+                        <Button fullWidth varient="text" disabled={isLoading} onClick={toggleLogin}>Sign Up Instead</Button>
                     </>
                 ) : (
                     <>
@@ -170,10 +186,10 @@ const Login = () => {
                                 value={password.value}
                                 onChange={password.changeHandler} />
 
-                            <Button sx={{ marginBottom: "5px" }} variant="contained" fullWidth color="primary" type="submit">Sign Up</Button>
+                            <Button sx={{ marginBottom: "5px" }} variant="contained" fullWidth color="primary" disabled={isLoading} type="submit">Sign Up</Button>
                         </form>
                         <Typography>OR</Typography>
-                        <Button fullWidth varient="text" onClick={toggleLogin}>Login Instead</Button>
+                        <Button fullWidth varient="text" disabled={isLoading} onClick={toggleLogin}>Login Instead</Button>
                     </>
                 )}
 

@@ -8,7 +8,7 @@ const Home = () => {
   return (
     <Box sx={{
       bgcolor: grayColor,
-      height: '100vh',
+      height: 'calc(100vh - 4rem)',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center'

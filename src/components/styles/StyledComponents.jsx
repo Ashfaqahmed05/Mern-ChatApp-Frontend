@@ -1,8 +1,8 @@
-import {styled} from "@mui/material"
+import {keyframes, Skeleton, styled} from "@mui/material"
 import { Link as LinkComponent } from "react-router-dom"
 import { grayColor, matBlack } from "../../constants/Color";
 
-export const VisuallyHiddenInput =  styled("input")({
+const VisuallyHiddenInput =  styled("input")({
     border: 0,
     clip: "rect(0px)",
     height: 1,
@@ -14,7 +14,7 @@ export const VisuallyHiddenInput =  styled("input")({
     whiteSpace: "nowrap"
 })
 
-export const Link = styled(LinkComponent)`
+const Link = styled(LinkComponent)`
     color: black;
     text-decoration: none;
     padding: 1rem;
@@ -23,7 +23,7 @@ export const Link = styled(LinkComponent)`
     }
 `;
 
-export const InputBox = styled("input")`
+const InputBox = styled("input")`
     width: 100%;
     height: 100%;
     border: none;
@@ -33,7 +33,7 @@ export const InputBox = styled("input")`
     background-color: ${grayColor}
 ` 
 
-export const SearchField = styled("input")`
+const SearchField = styled("input")`
     width: 20vmax;
     height: 100%;
     border: none;
@@ -44,7 +44,7 @@ export const SearchField = styled("input")`
     font-size: 1.1rem;
 ` 
 
-export const CurveButton = styled("button")`
+const CurveButton = styled("button")`
 border: none;
 outline: none;
 padding: 0.5rem 1rem;
@@ -56,3 +56,14 @@ font-size: 1.1rem;
     background-color: rgba(0,0,0,0.8);
 }
 `
+const bounceAnimation = keyframes`
+0% {transform: scale(1);}
+50% {transform: scale(1.5);}
+100% {transform: scale(1);}
+`
+const BounceSkeleton = styled(Skeleton)(()=> ({
+    animation: `${bounceAnimation} 1s infinite` 
+}))
+
+
+export { VisuallyHiddenInput, Link, InputBox, SearchField, CurveButton, BounceSkeleton}

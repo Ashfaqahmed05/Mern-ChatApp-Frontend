@@ -8,8 +8,10 @@ import {
 } from "@mui/icons-material"
 import { Box, Drawer, Grid, IconButton, Stack, Typography } from "@mui/material"
 import { useState } from "react"
-import { useLocation, Navigate } from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux"
+import { Navigate, useLocation } from "react-router-dom"
 import { matBlack } from "../../constants/Color"
+import { adminLogout } from "../../redux/thunks/admin"
 import { Link } from "../styles/StyledComponents"
 
 
@@ -40,9 +42,10 @@ export const adminTabs = [
 const Sidebar = ({ w = "100%" }) => {
 
     const location = useLocation()
+    const dispatch = useDispatch()
 
     const logoutHandler = () => {
-        console.log("logout")
+        dispatch(adminLogout())
     }
 
     return (
@@ -84,9 +87,10 @@ const Sidebar = ({ w = "100%" }) => {
     )
 }
 
-const isAdmin = true
 
 const AdminLayout = ({ children }) => {
+
+    const { isAdmin } = useSelector((state) => state.auth)
 
     const [isMobile, setIsMobile] = useState(false)
 
@@ -94,7 +98,7 @@ const AdminLayout = ({ children }) => {
 
     const handleClose = () => setIsMobile(false)
 
-    if(!isAdmin) return <Navigate to={"/Admin"} />
+    if (!isAdmin) return <Navigate to={"/Admin"} />
 
     return (
 
